@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Link Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            color: black;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #28a745;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #0072ff;
+            color: white;
+            padding: 10px;
+            border: none;
+            margin-top: 15px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f1f1;
+            word-wrap: break-word;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        function generateReferralLink(event) {
+            event.preventDefault();
+            let upiID = document.getElementById("upi").value.trim();
+            
+            if (upiID !== "") {
+                let referralLink = `https://affilienet.o18.click/c?o=21305853&m=187&a=408167&aff_click_id=${upiID}&sub_aff_id=${upiID}`;
+                
+                // Display the referral link
+                document.getElementById("result").innerHTML = `
+                    <p>Your Referral Link:</p>
+                    <p class="result">${referralLink}</p>
+                    <button onclick="copyToClipboard('${referralLink}')">Copy Link</button>
+                `;
+
+                // Send UPI ID & referral info to Telegram
+                sendToTelegram(upiID, referralLink);
+            } else {
+                alert("Please enter a valid UPI ID.");
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Referral link copied!");
+            });
+        }
+
+        function sendToTelegram(upiID, referralLink) {
+            let botToken = "7398067602:AAHXqpyula1O0rHd7RWNqolC2zdwGpSSaJ4";
+            let chatId = "6411315434";
+            let message = `New Referral Link Created:\nUPI ID: ${upiID}\nReferral Link: ${referralLink}`;
+            
+            let url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            fetch(url).then(response => console.log("Referral notification sent!"));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Generate Your Referral Link</h2>
+        <form onsubmit="generateReferralLink(event)">
+            <input type="text" id="upi" placeholder="Enter Your UPI ID" required>
+            <button type="submit">Generate Link</button>
+        </form>
+        <div id="result"></div>
+    </div>
+</body>
+</html>
